@@ -129,19 +129,18 @@ If prefix ARG is set, prompt for a directory to search from."
 ;;               :caller 'counsel-file-jump)))
 
 ;;;###autoload
-(defvar +my/repo-root-list '("~" "~/Dropbox" "~/go/src" "~/.cache" "~/.config")
-  "personal repo root to scan git projects")
+(defvar +my/repo-root-list '({{ .chezmoi.sourceDir | quote }}  ) "personal repo root to scan git projects")
 
-;;;###autoload
-(defvar +my/user-custom-repos '("/CCN_Tools/work/bstnnx_release/regression_test/"))
+(defvar +my/user-custom-repos '("~/.config/chezmoi/"))
 
 ;;;###autoload
 (defun update-projectile-known-projects ()
   (interactive)
   (require 'magit)
-  (setq magit-repository-directories '(("~/dev-local" . 3)))
+  (setq magit-repository-directories '(("~/.local/git/" . 3)
+									   ({{ .workspace_extra | quote }} . 3)))
   ;; Workplace folder has some permission error on macos
-  (let ((workspace-dir "~/dev/"))
+  (let ((workspace-dir {{ .workspace | quote }}))
     (when (file-directory-p workspace-dir)
       (dolist (dir (directory-files workspace-dir t))
         (when (and
@@ -158,8 +157,10 @@ If prefix ARG is set, prompt for a directory to search from."
     (setq magit-abs-repos (append magit-abs-repos (magit-list-repos)))
 
     ;; convert abs path to relative path (HOME)
-    (dolist (repo magit-abs-repos)
-      (push (concat "~/" (file-relative-name repo "~")) magit-repos))
+	(dolist (repo magit-abs-repos)
+	  (if (string-prefix-p (expand-file-name "~") repo)
+		  (push (concat "~/" (file-relative-name repo "~")) magit-repos)
+		(push repo magit-repos)))
     (setq projectile-known-projects magit-repos)
     (dolist (repo +my/user-custom-repos)
       (if (file-directory-p repo)
