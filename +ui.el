@@ -8,7 +8,7 @@
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (load-theme (get-random-element '(doom-acario-light doom-one-light doom-winter-is-coming-light)) t))
+    ('light (load-theme (get-random-element '(doom-one doom-acario-light doom-one-light doom-winter-is-coming-light)) t))
     ('dark (load-theme 'doom-city-lights t))))
 
 (if (display-graphic-p)
@@ -29,23 +29,13 @@
   (setq user-font
         (cond
          ((find-font (font-spec :name "Maple Mono Normal NF")) "Maple Mono Normal NF")
-         ((find-font (font-spec :name "Mononoki Nerd Font Mono")) "Mononoki Nerd Font Mono")
-         ((find-font (font-spec :name "CartographCF Nerd Font")) "CartographCF Nerd Font")
-         ((find-font (font-spec :name "OperatorMono Nerd Font")) "OperatorMono Nerd Font")
-         ((find-font (font-spec :name "Droid Sans Mono")) "Droid Sans Mono")
-         ((find-font (font-spec :name "Droid Sans Fallback")) "Droid Sans Fallback")))
-  ;; Some font uses Light font as regular, not sure why. Only use medium weight for this font.
-  (setq user-font-weight
-        (cond
-         ((string= user-font "CartographCF Nerd Font") 'medium)
-         (t 'normal))
-        )
+         ((find-font (font-spec :name "Mononoki Nerd Font Mono")) "Mononoki Nerd Font Mono")))
 
   ;; calculate the font size based on display-pixel-height
   (setq resolution-factor (eval (/ (x-display-pixel-height) 1080.0)))
-  (setq doom-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 14 resolution-factor))))
-        doom-big-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 18 resolution-factor))))
-        doom-variable-pitch-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 13 resolution-factor))))
+  (setq doom-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 16 resolution-factor))))
+        doom-big-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 21 resolution-factor))))
+        doom-variable-pitch-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 15 resolution-factor))))
         doom-modeline-height (eval (round (* 24 resolution-factor))))
   (setq doom-font-increment 1)
 
@@ -53,22 +43,6 @@
   (setq initial-frame-alist
         '((width . 110)
           (height . 65))))
-
-(add-hook! 'doom-first-buffer-hook
-  (defun +my/change-cjk-font ()
-    "change the cjk font and its size to align the org/markdown tables when have
-cjk characters. Font should be twice the width of asci chars so that org tables align.
-This will break if run in terminal mode, so use conditional to only run for GUI."
-    (when (display-graphic-p)
-      (setq user-cjk-font
-            (cond
-             ((find-font (font-spec :name "Hiragino Sans GB")) "Hiragino Sans GB") ; for macos
-             ((find-font (font-spec :name "Noto Sans CJK SC")) "Noto Sans CJK SC") ; for linux
-             ))
-      (dolist (charset '(kana han cjk-misc bopomofo))
-        (set-fontset-font (frame-parameter nil 'font)
-                          charset (font-spec :family user-cjk-font
-                                             :size (eval (round (* 15 resolution-factor)))))))))
 
 ;; Update window divider in terminal
 ;; https://www.reddit.com/r/emacs/comments/3u0d0u/how_do_i_make_the_vertical_window_divider_more/
