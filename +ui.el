@@ -8,8 +8,8 @@
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (load-theme (get-random-element '(doom-one doom-acario-light doom-one-light doom-winter-is-coming-light)) t))
-    ('dark (load-theme 'doom-city-lights t))))
+    ('light (load-theme (get-random-element '(doom-one)) t))
+    ('dark (load-theme 'doom-dark+ t))))
 
 (if (display-graphic-p)
     (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
@@ -28,14 +28,25 @@
 (when (display-graphic-p)
   (setq user-font
         (cond
+         ((find-font (font-spec :name "Berkeley Mono Variable")) "Berkeley Mono Variable")
          ((find-font (font-spec :name "Maple Mono Normal NF")) "Maple Mono Normal NF")
-         ((find-font (font-spec :name "Mononoki Nerd Font Mono")) "Mononoki Nerd Font Mono")))
+         ((find-font (font-spec :name "Mononoki Nerd Font Mono")) "Mononoki Nerd Font Mono")
+         ((find-font (font-spec :name "CartographCF Nerd Font")) "CartographCF Nerd Font")
+         ((find-font (font-spec :name "OperatorMono Nerd Font")) "OperatorMono Nerd Font")
+         ((find-font (font-spec :name "Droid Sans Mono")) "Droid Sans Mono")
+         ((find-font (font-spec :name "Droid Sans Fallback")) "Droid Sans Fallback")))
+  ;; Some font uses Light font as regular, not sure why. Only use medium weight for this font.
+  (setq user-font-weight
+        (cond
+         ((string= user-font "Berkeley Mono Variable") 'normal)
+         (t 'normal))
+        )
 
   ;; calculate the font size based on display-pixel-height
   (setq resolution-factor (eval (/ (x-display-pixel-height) 1080.0)))
-  (setq doom-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 16 resolution-factor))))
-        doom-big-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 21 resolution-factor))))
-        doom-variable-pitch-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 15 resolution-factor))))
+  (setq doom-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 14 resolution-factor))))
+        doom-big-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 18 resolution-factor))))
+        doom-variable-pitch-font (font-spec :family user-font :weight user-font-weight :size (eval (round (* 13 resolution-factor))))
         doom-modeline-height (eval (round (* 24 resolution-factor))))
   (setq doom-font-increment 1)
 
