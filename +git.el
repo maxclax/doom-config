@@ -28,19 +28,16 @@
 
 
 (after! magit
-  (setq magit-save-repository-buffers nil
-        git-commit-style-convention-checks nil
-        magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+        (setq magit-save-repository-buffers nil
+              git-commit-style-convention-checks nil
+              magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
 
-  ;; Add git-credential-manager-core support
-  (add-hook 'magit-process-prompt-functions
-            'magit-process-git-credential-manager-core)
+        ;; Add git-credential-manager-core support
+        (add-hook 'magit-process-prompt-functions
+                  'magit-process-git-credential-manager-core)
 
-  ;; fix magit prompt for midway auth
-  (appendq! magit-process-password-prompt-regexps '("Kerberos authentication failed.  Password:"))
-
-  (magit-wip-after-apply-mode t)
-  (magit-wip-before-change-mode t))
+        (magit-wip-after-apply-mode t)
+        (magit-wip-before-change-mode t))
 
 
 (after! forge
