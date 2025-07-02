@@ -78,25 +78,10 @@ To add executable: Idea -> Tools -> Create Command Line Launcher"
 ;; DOCKER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-docker-project-filename ()
-  (string-join `("/code/" ,(replace-regexp-in-string "detection/python/private" "python_root/detection"
-                                                     (file-relative-name (buffer-file-name) "~/av")))))
+;; Configure docker package to use podman instead of docker
 
-(+docker--open-with reveal-in-docker-pycharm "/usr/local/pycharm-2019.2.5/bin/pycharm.sh"
-                    (get-docker-project-filename) "pycharm" "pycharm")
-(+docker--open-with reveal-in-docker-clion "/usr/local/clion/bin/clion.sh"
-                    (get-docker-project-filename) "clion" "clion")
-
-;; TODO: find way to invoke after selection
-(defun +docker/reveal-in-apps ()
-  (interactive)
-  (let ((docker-cmds '(+docker/reveal-in-docker-pycharm +docker/reveal-in-docker-clion)))
-    (completing-read "Select docker apps:" docker-cmds)
-    ;; (ivy-read "Select docker apps:"
-    ;;                  docker-cmds
-    ;;                  :action #'counsel-M-x-action)
-    ))
-
+(setq docker-command "podman")
+(setq docker-compose-command "podman-compose")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TRASH
